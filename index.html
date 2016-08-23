@@ -1,0 +1,171 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>CRUD KENDO UI</title>
+	<link rel="stylesheet" href="styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="styles/kendo.bootstrap.min.css">
+    <link rel="stylesheet" href="styles/kendo.default.min.css" />
+    <link rel="stylesheet" href="styles/kendo.default.mobile.min.css" />
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/kendo.all.min.js"></script>
+</head>
+<body>
+<header>
+    <div class="container-fluid">
+        <div class="col-md-12 text-center">
+            <h1>KENDOUI Grid CRUD</h1>
+        </div>
+    </div>
+</header>
+	<!--MENU-->
+	<!--GRID KENDO-->
+    <section>
+        <div id="grid" class="countries">
+        <script id="newPopup" type="text/x-kendo-template">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12 col-lg-12">
+                    <h3>Country Editor</h3>
+          <p>
+            <label>Country name:<input data-bind="value:name" required /></label>
+          </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-12 col-lg-12">
+                    <div class="demo-section k-content">
+                  <h4>City</h4>
+                        <input id="city" style= "width:40%"/>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+            
+        </script>
+    </div>
+    
+    </section>
+	
+	
+	<script src="https://test-mobile.ubqti.com/api/mobile/country"></script>
+	<script>
+
+		 $(document).ready(function(){
+
+        $("#grid").kendoGrid({
+            
+            toolbar:["create"],
+            editable:{
+                mode:"popup",
+                template: kendo.template($("#newPopup").html()),
+                required: true
+
+            },
+            
+            columns: [{
+                field: "id", //nombre del campo de dataSource
+                title: "Country id"
+            },
+            {
+                field: "name",
+                title: "Country name"//titulo de la columna
+            
+
+            },
+            {
+                command: "delete"
+        
+      
+                  
+            }
+            
+            
+            ],
+            dataSource: {
+                    transport: {
+                        read: {
+                           url: "https://test-mobile.ubqti.com/api/mobile/country",//dnde están almacenados los datos
+                            dataType: "json",
+                            cache:false
+                        },
+                        create: {
+                            url:"https://test-mobile.ubqti.com/api/mobile/country",
+                            dataType:"json",
+                            type: "POST",
+                            complete: function()
+                            {
+                                $("#grid").data("kendoGrid").dataSource.read();
+                            }
+                        },
+                        update: {
+                            url:"https://test-mobile.ubqti.com/api/mobile/country",
+                            dataType:"json",
+                            type: "PUT"
+                        },
+                        destroy: {
+                            url:"https://test-mobile.ubqti.com/api/mobile/country",
+                            dataType:"json",
+                            type: "DELETE",
+                             
+                        }
+                    },
+                
+                    schema: {
+                          data: "response.data",
+                          model:{
+                            id:"id",
+                            name:"name",
+                            fields: {
+                                id: {editable:false, type:"string"},
+                                name: {editable:true, validation: {required: true} }
+                            }
+                          }
+                    }
+                },
+                height: 500,
+                scrollable: true,
+                selectable: true
+
+                
+        });//end kendogrid
+
+        $("#city").kendoDropDownList({
+                        placeholder:"choose any city",
+                        dataTextField:"name",
+                        dataValueField:"name",
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    dataType: "json",
+                                    url: "https://test-mobile.ubqti.com/api/mobile/country",
+                                    cache:false
+                                }
+                            }
+                        }
+                    });
+        
+           
+        
+    });//end ready.function
+         
+
+	</script>
+    
+    <footer>
+        <div class="container-fluid">
+            <div class="container">
+                <div class="col-md-12 text-center">
+                    <h3>
+                        All Rigths Reserved
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
